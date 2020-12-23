@@ -16,9 +16,10 @@ class UserModel:
       '''
       cursor.execute(sql, data)
       
+      userId = cursor.lastrowid
       connection.commit()
 
-      return {'code': 201, 'data': None}
+      return {'code': 201, 'data': {'userId': userId}}
      
     except dbapi2.errors.Error:
       connection.rollback()
@@ -46,13 +47,13 @@ class UserModel:
       cursor.close()
       connection.close()
 
-  def getById(self, bookId):
+  def getById(self, userId):
     try:
       connection = dbapi2.connect(**db_settings)
       cursor = connection.cursor(dictionary=True)
 
-      sql = ''' SELECT * FROM books WHERE id = %s '''
-      cursor.execute(sql, (bookId, ))
+      sql = ''' SELECT * FROM users WHERE id = %s '''
+      cursor.execute(sql, (userId, ))
 
       result = cursor.fetchone()
   
@@ -68,4 +69,24 @@ class UserModel:
       cursor.close()
       connection.close()
 
+  def getByEmail(self, email):
+    try:
+      connection = dbapi2.connect(**db_settings)
+      cursor = connection.cursor(dictionary=True)
+
+      sql = ''' SELECT * FROM users WHERE email = %s '''
+      cursor.execute(sql, (email, ))
+
+      result = cursor.fetchone()
+  
+      if(result == None):
+        return {'code': 404, 'data': None}
+
+      return {'code': 200, 'data': result}
     
+    except dbapi2.errors.Error:
+      connection.rollback()
+      return {'code': 422, 'data': None}
+    finally:
+      cursor.close()
+      connection.close()

@@ -12,3 +12,6 @@ registerV.add_argument("lastName", type=str, help="Please send lastName filed co
 registerV.add_argument("email", type=str, help="Please send email filed correctly!", required=True)
 registerV.add_argument("password", type=str, help="Please send password filed correctly!", required=True)
 
+# Validations for register route
+checkAuthV = reqparse.RequestParser()
+checkAuthV.add_argument("Authorization", type=str, help="Token!", location='headers')

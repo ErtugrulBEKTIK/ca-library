@@ -1,13 +1,13 @@
 from flask_restful import Resource, reqparse
 from database import Author
-from validations.authors import createV
-
+from validations.authors import createV, updateV, listV
+from flask_cors import CORS, cross_origin
 
 
 class AuthorsApi(Resource):
 	def get(self):
-
-		return Author.getAll()
+		args = listV.parse_args()	
+		return Author.getAll(args)
 
 	def post(self):
 		args = createV.parse_args()	
@@ -18,4 +18,14 @@ class AuthorsApi(Resource):
 
 class AuthorApi(Resource):
 	def get(self, authorId):
-		return Author.getById(authorId)
+		result = Author.getById(authorId);
+		return result['data'], result['code']
+
+	def patch(self, authorId):
+		args = updateV.parse_args()	
+		result = Author.updateById(authorId, args);
+		return result['data'], result['code']
+
+	def delete(self, authorId):
+		result = Author.delete(authorId)
+		return result['data'], result['code']

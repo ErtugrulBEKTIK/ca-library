@@ -1,12 +1,16 @@
 from flask import Flask, request
 from flask_restful import Api, Resource
-
+from flask_cors import CORS
 from resources.routes import initialize_routes
 from middlewares import initialize_middlewares
 
 app = Flask(__name__)
-api = Api(app)
 
+cors = CORS(app, resources={r"*": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+
+api = Api(app)
 initialize_middlewares(app)
 initialize_routes(api)
 

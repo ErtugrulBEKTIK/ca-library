@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
   (concat(coalesce(firstName,''),' ',coalesce(lastName,''))) STORED, 
   email varchar(255) NOT NULL,
   password varchar(255) NOT NULL,
+  avatar varchar(255) NOT NULL,
   roleId int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY email (email),
@@ -37,6 +38,8 @@ CREATE TABLE IF NOT EXISTS books (
   title varchar(255) DEFAULT NULL, 
   description text DEFAULT NULL,
   year int(4) DEFAULT NULL,
+  shelf varchar(255) DEFAULT NULL,
+  status int(4) DEFAULT 1,
   publisher varchar(255) DEFAULT NULL, 
   PRIMARY KEY (id)
 );
@@ -70,7 +73,7 @@ CREATE TABLE IF NOT EXISTS bookCategories (
 
 CREATE TABLE IF NOT EXISTS bookings (
   id int(11) NOT NULL AUTO_INCREMENT,
-  bookingStatusTypeId int(11) DEFAULT 1,
+  status int(11) DEFAULT 1,
   startDate datetime DEFAULT NULL,
   endDate varchar(255) DEFAULT NULL,
   userId int(11) DEFAULT NULL,
