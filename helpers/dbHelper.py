@@ -1,42 +1,32 @@
-import mysql.connector
+import functools
+import mysql.connector as dbapi2
 from settings import db_settings
 
-def run_create(statement, data = {}):
-  try:
-    connection = mysql.connector.connect(**db_settings)
-    cursor = connection.cursor()
+def connect(func):
+    @functools.wraps(func)
+    def wrap(self, *args, **kwargs):
+      anyError = False
+      try:
+        connection = dbapi2.connect(**db_settings)
+        cursor = connection.cursor(dictionary=True)
 
+        return func(self, cursor, *args, **kwargs)
 
-    x = cursor.execute(statement, data)
-    print(x)
-    connection.commit()
+      except dbapi2.errors.Error as err:
+        anyError = True
+        print(err) 
+        connection.rollback()
 
-    cursor.close()
-  except mysql.DatabaseError:
-    connection.rollback()
-    return False
-  finally:
-    connection.close()
-    return True
+        return {'code': 422, 'data': None}
 
-def run_select(statement, one = False):
-  try:
-    connection = mysql.connector.connect(**db_settings)
-    cursor = connection.cursor(dictionary=True)
+      except Exception as err:
+        anyError = True
+        print(err) 
+        return {'code': 500, 'data': None}
 
-    cursor.execute(statement)
+      finally:
+        if not anyError: connection.commit()
 
-    if one:
-      result = cursor.fetchone()
-    else:
-      result = cursor.fetchall()
-
-    cursor.close()
-  except mysql.DatabaseError:
-    connection.rollback()
-    return False
-  finally:
-    connection.close()
-    return result
-
-
+        cursor.close() 
+        connection.close()
+    return wrap

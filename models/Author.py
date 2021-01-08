@@ -1,36 +1,19 @@
-import mysql.connector as dbapi2
-from settings import db_settings
+from helpers.dbHelper import connect
 
-class AuthorModel:
+class AuthorModel():
 
-  def create(self, data):
+  @connect
+  def create(self, cursor, data):
 
-    try:
-      connection = dbapi2.connect(**db_settings)
-      cursor = connection.cursor()
-
-      # Insert book into db
-      sql = '''
+    # Insert book into db
+    sql = '''
       INSERT INTO authors (fullName, description)
       VALUES (%(fullName)s, %(description)s)
-      '''
-      cursor.execute(sql, data)
-     
-      connection.commit()
-
-      cursor.close()
-    except mysql.DatabaseError:
-      connection.rollback()
-      return False
-    finally:
-      connection.close()
-      return True
+    '''
+    cursor.execute(sql, data)
     
-  
-    
-  def getAll(self, options):
-    connection = dbapi2.connect(**db_settings)
-    cursor = connection.cursor(dictionary=True)
+  @connect
+  def getAll(self, cursor, options):
 
     # Get records by page 
     recordStart = (options.pageNumber - 1) * options.pageSize
@@ -47,84 +30,40 @@ class AuthorModel:
     cursor.execute(sql)
     count = cursor.fetchone()['count']
 
-    cursor.close()
-    connection.close()
-
     return { 'count': count, 'rows': rows }
 
-  def getById(self, id):
+  @connect
+  def getById(self, cursor, id):
     
-    try:
-      connection = dbapi2.connect(**db_settings)
-      cursor = connection.cursor(dictionary=True)
+    sql = '''
+      SELECT fullName, description FROM authors WHERE id = %s
+    '''
+    cursor.execute(sql, (id, ))
 
-      sql = '''
-        SELECT fullName, description FROM authors WHERE id = %s
-      '''
-      cursor.execute(sql, (id, ))
+    result = cursor.fetchone()
 
-      result = cursor.fetchone()
+    if(result):
+      return {'code': 200, 'data': result}
+    else:
+      return {'code': 404, 'data': None}
 
-      if(result):
-        return {'code': 200, 'data': result}
-      else:
-        return {'code': 404, 'data': None}
-     
-    except dbapi2.errors.Error:
-      connection.rollback()
-      return {'code': 422, 'data': None}
-
-    finally:
-      cursor.close() 
-      connection.close()
-
-  def updateById(self, id, data):
+  @connect
+  def updateById(self, cursor, id, data):
     
-    try:
-      connection = dbapi2.connect(**db_settings)
-      cursor = connection.cursor(dictionary=True)
+    data['id'] = id
+    sql = '''
+      UPDATE authors SET fullNames = %(fullName)s, description = %(description)s
+      WHERE id = %(id)s
+    '''
+    cursor.execute(sql, data)
 
-      data['id'] = id
+    return {'code': 204, 'data': None}
 
-      print(data)
+  @connect
+  def delete(self, cursor, id):
+    sql = '''
+      DELETE FROM authors WHERE id = %s
+    '''
+    cursor.execute(sql, (id, ))
 
-      sql = '''
-        UPDATE authors SET fullName = %(fullName)s, description = %(description)s
-        WHERE id = %(id)s
-      '''
-      cursor.execute(sql, data)
-
-      connection.commit()
-
-      return {'code': 204, 'data': None}
-     
-    except dbapi2.errors.Error:
-      connection.rollback()
-      return {'code': 422, 'data': None}
-
-    finally:
-      cursor.close() 
-      connection.close()
-
-  def delete(self, id):
-
-    try:
-      connection = dbapi2.connect(**db_settings)
-      cursor = connection.cursor(dictionary=True)
-
-      sql = '''
-        DELETE FROM authors WHERE id = %s
-      '''
-      cursor.execute(sql, (id, ))
-      connection.commit()
-
-      return {'code': 204, 'data': None}
-     
-    except dbapi2.errors.Error:
-      connection.rollback()
-      return {'code': 422, 'data': None}
-
-    finally:
-      cursor.close() 
-      connection.close()
-    
+    return {'code': 204, 'data': None}
