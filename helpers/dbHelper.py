@@ -21,7 +21,8 @@ def connect(func):
 
       except Exception as err:
         anyError = True
-        print(err) 
+        #print(err) 
+        raise err
         return {'code': 500, 'data': None}
 
       finally:

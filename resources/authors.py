@@ -1,13 +1,13 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from database import Author
 from validations.authors import createV, updateV, listV
-from flask_cors import CORS, cross_origin
 
 
 class AuthorsApi(Resource):
 	def get(self):
 		args = listV.parse_args()	
-		return Author.getAll(args)
+		result = Author.getAll(args);
+		return result['data'], result['code']
 
 	def post(self):
 		args = createV.parse_args()	

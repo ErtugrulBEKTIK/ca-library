@@ -1,14 +1,14 @@
 from helpers.dbHelper import connect
 
-class AuthorModel():
+class CategoryModel():
 
   @connect
   def create(self, cursor, data):
 
     # Insert book into db
     sql = '''
-      INSERT INTO authors (fullName, description)
-      VALUES (%(fullName)s, %(description)s)
+      INSERT INTO categories (name)
+      VALUES (%(name)s)
     '''
     cursor.execute(sql, data)
     
@@ -20,21 +20,17 @@ class AuthorModel():
       recordStart = (options.pageNumber - 1) * options.pageSize
 
     if options.search:
-      sql = '''
-        SELECT * FROM authors WHERE fullname LIKE %s ORDER BY fullName ASC
-      '''
+      sql = 'SELECT * FROM categories WHERE name LIKE %s ORDER BY name ASC'
       cursor.execute(sql, ('%'+options.search+'%',))
     else:
-      sql = '''
-        SELECT id, fullName FROM authors ORDER BY fullName ASC LIMIT %s, %s
-      '''
+      sql = 'SELECT * FROM categories ORDER BY name ASC LIMIT %s, %s'
       cursor.execute(sql, (recordStart, options.pageSize))
-    
+
     rows = cursor.fetchall()
 
     # Get total count
     sql = '''
-      SELECT COUNT(*) as count FROM authors
+      SELECT COUNT(*) as count FROM categories
     '''
     cursor.execute(sql)
     count = cursor.fetchone()['count']
@@ -45,7 +41,7 @@ class AuthorModel():
   def getById(self, cursor, id):
     
     sql = '''
-      SELECT fullName, description FROM authors WHERE id = %s
+      SELECT name FROM categories WHERE id = %s
     '''
     cursor.execute(sql, (id, ))
 
@@ -61,7 +57,7 @@ class AuthorModel():
     
     data['id'] = id
     sql = '''
-      UPDATE authors SET fullName = %(fullName)s, description = %(description)s
+      UPDATE categories SET name = %(name)s
       WHERE id = %(id)s
     '''
     cursor.execute(sql, data)
@@ -70,7 +66,9 @@ class AuthorModel():
 
   @connect
   def delete(self, cursor, id):
-    sql = 'DELETE FROM authors WHERE id = %s'
+    sql = '''
+      DELETE FROM categories WHERE id = %s
+    '''
     cursor.execute(sql, (id, ))
 
     return {'code': 204, 'data': None}

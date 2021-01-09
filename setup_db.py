@@ -37,11 +37,13 @@ CREATE TABLE IF NOT EXISTS books (
   id int(11) NOT NULL AUTO_INCREMENT, 
   title varchar(255) DEFAULT NULL, 
   description text DEFAULT NULL,
-  year int(4) DEFAULT NULL,
+  year year DEFAULT NULL,
   shelf varchar(255) DEFAULT NULL,
   status int(4) DEFAULT 1,
   publisher varchar(255) DEFAULT NULL, 
-  PRIMARY KEY (id)
+  barcode varchar(255) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY barcode (barcode)
 );
 
 CREATE TABLE IF NOT EXISTS bookAuthors (
@@ -52,7 +54,7 @@ CREATE TABLE IF NOT EXISTS bookAuthors (
   CONSTRAINT bookAuthors_ibfk_1 FOREIGN KEY (bookId) REFERENCES books
   (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT bookAuthors_ibfk_2 FOREIGN KEY (authorId) REFERENCES authors
-  (id) ON DELETE CASCADE ON UPDATE CASCADE );
+  (id) ON DELETE RESTRICT ON UPDATE CASCADE );
 
 CREATE TABLE IF NOT EXISTS categories (
   id int(11) NOT NULL AUTO_INCREMENT, 
@@ -68,7 +70,7 @@ CREATE TABLE IF NOT EXISTS bookCategories (
   CONSTRAINT bookCategories_ibfk_1 FOREIGN KEY (bookId) REFERENCES books
   (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT bookCategories_ibfk_2 FOREIGN KEY (categoryId) REFERENCES
-  categories (id) ON DELETE CASCADE ON UPDATE CASCADE 
+  categories (id) ON DELETE RESTRICT ON UPDATE CASCADE 
 );
 
 CREATE TABLE IF NOT EXISTS bookings (
