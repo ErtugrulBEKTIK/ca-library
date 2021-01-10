@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from database import Book
-from validations.books import createV, listV
+from validations.books import createV, updateV, listV
 
 
 
@@ -20,6 +20,11 @@ class BooksApi(Resource):
 class BookApi(Resource):
 	def get(self, bookId):
 		result = Book.getById(bookId)
+		return result['data'], result['code']
+
+	def patch(self, bookId):
+		args = updateV.parse_args()	
+		result = Book.updateById(bookId, args);
 		return result['data'], result['code']
 
 	def delete(self, bookId):
