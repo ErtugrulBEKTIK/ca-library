@@ -6,7 +6,7 @@ from validations.categories import createV, updateV, listV
 class CategoriesApi(Resource):
 	def get(self):
 		args = listV.parse_args()	
-		result = Category.getAll(args)
+		result = Category.getPaginated(args)
 		return result['data'], result['code']
 
 	def post(self):

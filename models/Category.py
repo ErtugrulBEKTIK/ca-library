@@ -13,7 +13,7 @@ class CategoryModel():
     cursor.execute(sql, data)
     
   @connect
-  def getAll(self, cursor, options):
+  def getPaginated(self, cursor, options):
 
     # Get records by page 
     if options.pageNumber:
@@ -36,6 +36,17 @@ class CategoryModel():
     count = cursor.fetchone()['count']
 
     return {'code': 200, 'data': { 'count': count, 'rows': rows }}
+
+
+  @connect
+  def getAll(self, cursor):
+
+    
+    cursor.execute('SELECT * FROM categories ORDER BY name')
+    categories = cursor.fetchall()
+
+    return {'code': 200, 'data': categories}
+
 
   @connect
   def getById(self, cursor, id):

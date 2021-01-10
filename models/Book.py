@@ -55,13 +55,30 @@ class BookModel:
 
   @connect  
   def getAll(self, cursor, options):
-
-     # Get records by page 
+  
+    # Get records by page 
     recordStart = (options.pageNumber - 1) * options.pageSize
 
     searchSql = '%'+options.search+'%' if options.search else '%%';
 
-    sql = 'SELECT * FROM books WHERE title LIKE %s ORDER BY title ASC LIMIT %s, %s'
+    # Prepare category SQL
+    categoriesSql = ''
+    if options['categories']:
+      tmpArr = []
+      for cId in options['categories']:
+        tmpArr.append('j.categoryId = {}'.format(cId))
+
+      joined = ' OR '.join(tmpArr)
+
+      categoriesSql = 'AND('+joined+')'
+
+    sql = '''SELECT books.* FROM books 
+      RIGHT JOIN bookCategories as j ON j.bookId = books.id
+      WHERE title LIKE %s''' + categoriesSql + '''
+      GROUP BY id ORDER BY title ASC LIMIT %s, %s 
+    '''
+
+    #sql = 'SELECT * FROM books WHERE title LIKE %s ORDER BY title ASC LIMIT %s, %s'
     cursor.execute(sql, (searchSql, recordStart, options.pageSize))
     
     books = cursor.fetchall()

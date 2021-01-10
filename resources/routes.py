@@ -2,6 +2,7 @@ from resources.auth import Login, Register
 from resources.books import BookApi, BooksApi
 from resources.authors import AuthorApi, AuthorsApi
 from resources.categories import CategoryApi, CategoriesApi
+from resources.public import PublicBooks, PublicCategories
 
 def initialize_routes(api):
     api.add_resource(Login, '/auth/login')
@@ -12,3 +13,5 @@ def initialize_routes(api):
     api.add_resource(AuthorApi, '/admin/authors/<int:authorId>')
     api.add_resource(CategoriesApi, '/admin/categories')
     api.add_resource(CategoryApi, '/admin/categories/<int:categoryId>')
+    api.add_resource(PublicBooks, '/public/books')
+    api.add_resource(PublicCategories, '/public/categories')
