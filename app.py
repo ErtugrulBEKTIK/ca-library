@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_restful import Api, Resource
 from flask_cors import CORS
-from resources.routes import initialize_routes
+from router import initialize_routes
 from middlewares import initialize_middlewares
 
 app = Flask(__name__)

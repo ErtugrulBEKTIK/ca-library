@@ -32,6 +32,7 @@ class Login(Resource):
 		return {
 			'firstName': result['data']['firstName'],
 			'lastName': result['data']['lastName'],
+			'roleId': result['data']['roleId'],
 			'email': result['data']['email'],
 			'avatar': result['data']['avatar'],
 			'token': encoded_jwt.decode('utf-8')
@@ -60,7 +61,9 @@ class Register(Resource):
 			return {
 				'firstName': args['firstName'],
 				'lastName': args['lastName'],
+				'roleId': args['roleId'],
 				'email': args['email'],
+				'avatar': '001-boy.svg',
 				'token': encoded_jwt.decode('utf-8')
 			}
 		else:

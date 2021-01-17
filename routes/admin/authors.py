@@ -3,7 +3,7 @@ from database import Author
 from validations.authors import createV, updateV, listV
 
 
-class AuthorsApi(Resource):
+class AdminAuthors(Resource):
 	def get(self):
 		args = listV.parse_args()	
 		result = Author.getAll(args);
@@ -16,7 +16,7 @@ class AuthorsApi(Resource):
 
 
 
-class AuthorApi(Resource):
+class AdminAuthor(Resource):
 	def get(self, authorId):
 		result = Author.getById(authorId);
 		return result['data'], result['code']

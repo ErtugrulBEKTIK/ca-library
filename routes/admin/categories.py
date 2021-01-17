@@ -3,7 +3,7 @@ from database import Category
 from validations.categories import createV, updateV, listV
 
 
-class CategoriesApi(Resource):
+class AdminCategories(Resource):
 	def get(self):
 		args = listV.parse_args()	
 		result = Category.getPaginated(args)
@@ -16,7 +16,7 @@ class CategoriesApi(Resource):
 
 
 
-class CategoryApi(Resource):
+class AdminCategory(Resource):
 	def get(self, categoryId):
 		result = Category.getById(categoryId);
 		return result['data'], result['code']

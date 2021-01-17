@@ -4,7 +4,7 @@ from validations.books import createV, updateV, listV
 
 
 
-class BooksApi(Resource):
+class AdminBooks(Resource):
 	def get(self):
 		args = listV.parse_args()	
 		result = Book.getAll(args)
@@ -17,7 +17,7 @@ class BooksApi(Resource):
 
 
 
-class BookApi(Resource):
+class AdminBook(Resource):
 	def get(self, bookId):
 		result = Book.getById(bookId)
 		return result['data'], result['code']

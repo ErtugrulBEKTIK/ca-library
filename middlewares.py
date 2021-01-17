@@ -7,7 +7,7 @@ def initialize_middlewares(app):
   @app.before_request
   def checkAuth():
     namespace = request.path.split('/')[1]
-    if request.method != 'OPTIONS' and namespace == 'admin':
+    if request.method != 'OPTIONS' and (namespace == 'admin' or namespace == 'profile'):
       args = checkAuthV.parse_args()
 
       if args.Authorization == None:
@@ -17,9 +17,17 @@ def initialize_middlewares(app):
       token = args.Authorization[7:]
 
       try:
-        jwt.decode(token, api_key)
-      except:
+        decoded = jwt.decode(token, api_key)
+        request.environ['decoded'] = decoded
+
+      except Exception as err:
+        raise err
         return Response('Token not validated', 401)
+
+      # Security check for admin privileges
+      if namespace == 'admin' and not (decoded['roleId'] == 1 or decoded['roleId'] == 2):
+        return Response('You are not allowed to enter', 401)
+
       
   
 

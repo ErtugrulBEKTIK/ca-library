@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS books (
   year year DEFAULT NULL,
   shelf varchar(255) DEFAULT NULL,
   status int(4) DEFAULT 1,
+  borrowable tinyint(1) DEFAULT 1,
   publisher varchar(255) DEFAULT NULL, 
   barcode varchar(255) NOT NULL,
   PRIMARY KEY (id),
@@ -77,7 +78,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   id int(11) NOT NULL AUTO_INCREMENT,
   status int(11) DEFAULT 1,
   startDate datetime DEFAULT NULL,
-  endDate varchar(255) DEFAULT NULL,
+  endDate datetime DEFAULT NULL,
   userId int(11) DEFAULT NULL,
   bookId int(11) DEFAULT NULL,
   PRIMARY KEY (id),
@@ -92,9 +93,11 @@ CREATE TABLE IF NOT EXISTS bookings (
 CREATE TABLE IF NOT EXISTS comments (
   id int(11) NOT NULL AUTO_INCREMENT,
   content text DEFAULT NULL,
-  status tinyint(1) DEFAULT NULL,
+  status tinyint(1) DEFAULT 0,
+  star float DEFAULT NULL,
   userId int(11) DEFAULT NULL,
   bookId int(11) DEFAULT NULL,
+  createdAt datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (id),
   KEY userId (userId),
   KEY bookId (bookId),
@@ -102,20 +105,6 @@ CREATE TABLE IF NOT EXISTS comments (
   ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT comments_ibfk_6 FOREIGN KEY (bookId) REFERENCES books (id)
   ON DELETE SET NULL ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS ratings (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  star float DEFAULT NULL,
-  userId int(11) DEFAULT NULL,
-  bookId int(11) DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY userId (userId),
-  KEY bookId (bookId),
-  CONSTRAINT ratings_ibfk_5 FOREIGN KEY (userId) REFERENCES users (id) ON
-  DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT ratings_ibfk_6 FOREIGN KEY (bookId) REFERENCES books (id) ON
-  DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS wishes (

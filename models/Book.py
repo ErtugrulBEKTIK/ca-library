@@ -63,7 +63,7 @@ class BookModel:
 
     # Prepare category SQL
     categoriesSql = ''
-    if options['categories']:
+    if 'categories' in options and options['categories']:
       tmpArr = []
       for cId in options['categories']:
         tmpArr.append('j.categoryId = {}'.format(cId))
@@ -102,6 +102,14 @@ class BookModel:
       '''
       cursor.execute(sql, (book['id'],))
       book['categories'] = cursor.fetchall()
+
+      # Add categories of book
+      sql = '''
+        SELECT COUNT(*) as count, AVG(star) as rating FROM comments
+        WHERE bookId = %s AND status = 1
+      '''
+      cursor.execute(sql, (book['id'],))
+      book['comment'] = cursor.fetchone()
 
     # Get total count
     sql = 'SELECT COUNT(*) as count FROM books WHERE title LIKE %s'
