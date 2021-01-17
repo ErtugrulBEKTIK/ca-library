@@ -7,7 +7,6 @@ from middlewares import initialize_middlewares
 app = Flask(__name__)
 
 cors = CORS(app, resources={r"*": {"origins": "*"}})
-app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 api = Api(app)
