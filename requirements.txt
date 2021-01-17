@@ -5,3 +5,4 @@ mysql-connector-python==8.0.22
 pyjwt==1.7.1
 passlib==1.7.4
 enum34==1.1.10
+flask-cors==3.0.9
