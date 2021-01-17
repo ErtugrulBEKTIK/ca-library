@@ -1,8 +1,8 @@
 db_settings = {
-  'host': '127.0.0.1',
-  'database': 'ca-library',
-  'user': 'root',
-  'password': ''
+  'host': 'remotemysql.com',
+  'database': 'PrCsH67m6f',
+  'user': 'PrCsH67m6f',
+  'password': 'ju5dvUJ3NY'
 }
 
 api_key = 'BLG-317E-x7b9m24z3p'
