@@ -9,7 +9,7 @@ class ProfilePassword(Resource):
 		userId = request.environ['decoded']['id']
 
 		#Get user by id in db
-		result = User.getById(userId)
+		result = User.getPassword(userId)
 		
 		# If password not match
 		if(not sha256_crypt.verify(args['oldPassword'], result['data']['password'])):

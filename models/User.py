@@ -65,6 +65,19 @@ class UserModel:
     return {'code': 200, 'data': result}
 
   @connect 
+  def getPassword(self, cursor, userId):
+    sql = 'SELECT password FROM users WHERE id = %s'
+    cursor.execute(sql, (userId, ))
+
+    result = cursor.fetchone()
+
+    if(result == None):
+      return {'code': 404, 'data': None}
+
+    return {'code': 200, 'data': result}
+
+
+  @connect 
   def getByEmail(self, cursor, email):
     sql = ''' SELECT * FROM users WHERE email = %s '''
     cursor.execute(sql, (email, ))
