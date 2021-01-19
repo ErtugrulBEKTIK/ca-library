@@ -34,6 +34,10 @@ class BookingModel:
     sql = 'UPDATE books SET status = %s WHERE id = %s'
     cursor.execute(sql, (BookStatus.BORROWED.value, bookId))
 
+    # Delete book in wishlist if exist
+    sql = 'DELETE FROM wishes WHERE bookId = %s AND userId = %s'
+    cursor.execute(sql, (bookId, userId))
+
     return {'code': 204, 'data': None}
 
   @connect  

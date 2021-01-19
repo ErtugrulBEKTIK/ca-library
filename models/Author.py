@@ -26,7 +26,7 @@ class AuthorModel():
       cursor.execute(sql, ('%'+options.search+'%',))
     else:
       sql = '''
-        SELECT id, fullName FROM authors ORDER BY fullName ASC LIMIT %s, %s
+        SELECT id, fullName, description FROM authors ORDER BY fullName ASC LIMIT %s, %s
       '''
       cursor.execute(sql, (recordStart, options.pageSize))
     
